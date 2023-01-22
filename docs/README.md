@@ -77,3 +77,32 @@
   - Ex)   @PostMapping(value = "/mapping-produce", produces = "text/html") 
   - HTTP 요청의 Accept 헤더를 기반으로 미디어 타입으로 매핑한다. 
    만약 맞지 않으면 HTTP 406 상태코드(Not Acceptable)을 반환한다.
+
+## 3. HTTP 요청 - 기본, 헤더 조회
+- @RequestHeader MultiValueMap<String, String> headerMap
+  - 모든 HTTP 헤더를 MultiValueMap 형식으로 조회한다. 
+- @RequestHeader("host") String host
+  - 특정 HTTP 헤더를 조회한다. 속성
+  - 필수 값 여부: required
+  - 기본 값 속성: defaultValue
+- @CookieValue(value = "myCookie", required = false) String cookie
+  - 특정 쿠키를 조회한다. 속성
+  - 필수 값 여부: required 
+  - 기본 값: defaultValue
+- MultiValueMap
+ - MAP과 유사한데, 하나의 키에 여러 값을 받을 수 있다.
+ - HTTP header, HTTP 쿼리 파라미터와 같이 하나의 키에 여러 값을 받을 때 사용한다.
+   - keyA=value1&keyA=value2
+   ``` 
+     MultiValueMap<String, String> map = new LinkedMultiValueMap();
+     map.add("keyA", "value1");
+     map.add("keyA", "value2");
+     //[value1,value2]
+     List<String> values = map.get("keyA");
+   ```
+ - @Slf4j
+  - 다음 코드를 자동으로 생성해서 로그를 선언해준다. 개발자는 편리하게 log 라고 사용하면 된다.
+  ``` 
+  private static final org.slf4j.Logger log =
+  org.slf4j.LoggerFactory.getLogger(RequestHeaderController.class);
+  ``` 
