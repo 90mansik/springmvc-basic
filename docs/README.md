@@ -1,5 +1,5 @@
 # 스프링 MVC - 기본 기능
-### 출처 : 스프링 MVC 1편 - 백엔드 웹 개발 핵심 기술(김영한님 강의)
+### 출처 : 스프링 MVC 1편 - 백엔드 웹 개발 핵심 기술(김영한님 강현)
 
 ## 1.로깅
 
@@ -34,3 +34,46 @@
 - 시스템 아웃 콘솔에만 출력하는 것이 아니라, 파일이나 네트워크 등, 로그를 변도의 위치에 남길 수 있다.
 - 성능이 System.out보다 좋다.
 
+
+## 2.요청매핑
+
+### @RestController
+- @Controller는 반환 값이 String 이면 뷰 이름으로 인식 하기 때문에 뷰를 찾고 뷰가 랜더링 된다.
+  @RestController 는 반환 값으로 뷰를 찾는 것 아닌, HTTP 메시지 바디에 바로 입력한다.
+
+### Url Mapping 변경 사항 (스프링 부트 3.0 이전/이후)
+- 스프링 부트 3.0 이전
+  - 다음 두가지 요청은 다른 URL이지만, 스프링은 다음 URL 요청들을 같은 요청으로 매핑한다. 
+  - 매핑: /hello-basic
+  - URL 요청: /hello-basic , /hello-basic/
+- 스프링 부트 3.0 이후
+  - /hello-basic , /hello-basic/ 는 서로 다른 URL 요청을 사용해야 한다.
+  - 기존에는 마지막에 있는 / (slash)를 제거했지만, 스프링 부트 3.0 부터는 마지막의 / (slash)를 유지한다. > 따라서 다음과 같이 다르게 매핑해서 사용해야 한다.
+  - 매핑: /hello-basic URL 요청: /hello-basic
+  - 매핑: /hello-basic/ URL 요청: /hello-basic/
+
+### HTTP 매핑
+
+#### @RequestMapping
+- method 형식을 지정하지 않으면 HTTP 메서드와 무관하게 호출된다.
+- 모두 허용 GET, HEAD, POST, PUT, PATCH, DELETE
+
+#### HTTP 메서드 축약 사용
+- 축약된 http 메서드를 사용할 수 있다. 실제로 메서드를 타고 들어가면 @ReqeustMapping(method = {})로 지정되어 있다.
+- @GetMapping, @PostMapping, @PutMapping, @DeleteMapping, @PatchMapping
+
+
+#### PathVariable(경로 변수) 사용
+- Ex) @PathVariable("userId") String data 
+- @RequestMapping 은 URL 경로를 템플릿화 할 수 있는데, @PathVariable 을 사용하면 매칭 되는 부분을 편리하게 조회할 수 있다.
+- @PathVariable 의 이름과 파라미터 이름이 같으면 생략할 수 있다.
+
+#### 미디어 타입 조건 매핑
+- consumes 타입 설정
+  - Ex) PostMapping(value = "/mapping-consume", consumes = "application/json")
+  - HTTP 요청의 Content-Type 헤더를 기반으로 미디어 타입으로 매핑한다.
+    만약 맞지 않으면 HTTP 415 상태코드(Unsupported Media Type)을 반환한다.
+- produces 타입 설정
+  - Ex)   @PostMapping(value = "/mapping-produce", produces = "text/html") 
+  - HTTP 요청의 Accept 헤더를 기반으로 미디어 타입으로 매핑한다. 
+   만약 맞지 않으면 HTTP 406 상태코드(Not Acceptable)을 반환한다.
